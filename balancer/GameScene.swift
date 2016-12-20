@@ -18,13 +18,14 @@ class GameScene: SKScene {
     
     override func didMoveToView(view: SKView) {
         /* Setup your scene here */
-        let myLabel = SKLabelNode(fontNamed:"Chalkduster")
+        /*let myLabel = SKLabelNode(fontNamed:"Chalkduster")
         myLabel.text = "Balancer"
         myLabel.fontSize = 45
-        myLabel.position = CGPoint(x:CGRectGetMidX(self.frame), y:CGRectGetMidY(self.frame))
+        myLabel.position = CGPoint(x:CGRectGetMidX(self.frame), y:CGRectGetMidY(self.frame))*/
         
         
-        self.addChild(myLabel)
+        //self.addChild(myLabel)
+        
         createPlayer()
         
         //removing the gravity from the player
@@ -34,11 +35,9 @@ class GameScene: SKScene {
         motionManager = CMMotionManager()
         motionManager.startAccelerometerUpdates()
         
-        // 1
+        // set bounding box to the screen
         let borderBody = SKPhysicsBody(edgeLoopFromRect: self.frame)
-        // 2
         borderBody.friction = 0
-        // 3
         self.physicsBody = borderBody
         
     }
