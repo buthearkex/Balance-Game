@@ -9,7 +9,17 @@
 import CoreMotion
 import SpriteKit
 
-class GameScene: SKScene {
+
+//Different collision types in the game
+enum CollisionObjects:UInt32 {
+    case player = 1
+    case circle = 2
+    // next on ewould be 4 and 8
+}
+
+
+
+class GameScene: SKScene, SKPhysicsContactDelegate {
     
     
     var motionManager: CMMotionManager!
@@ -25,6 +35,8 @@ class GameScene: SKScene {
         
         
         //self.addChild(myLabel)
+        
+        physicsWorld.contactDelegate = self
         
         createPlayer()
         
@@ -70,6 +82,7 @@ class GameScene: SKScene {
             physicsWorld.gravity = CGVector(dx: accelerometerData.acceleration.y * -50, dy: accelerometerData.acceleration.x * 50)
         }
     }
+
     
     func createPlayer() {
         player = SKSpriteNode(imageNamed: "SKSpriteNode")
@@ -79,8 +92,10 @@ class GameScene: SKScene {
         player.physicsBody!.linearDamping = 0.5
         
         /*player.physicsBody!.categoryBitMask = CollisionTypes.player.rawValue
-        player.physicsBody!.contactTestBitMask = CollisionTypes.star.rawValue | CollisionTypes.vortex.rawValue | CollisionTypes.finish.rawValue
-        player.physicsBody!.collisionBitMask = CollisionTypes.wall.rawValue*/
+        player.physicsBody!.contactTestBitMask = CollisionTypes.star.rawValue | CollisionTypes.vortex.rawValue | CollisionTypes.finish.rawValue*/
+        player.physicsBody!.categoryBitMask = 1
+        player.physicsBody!.contactTestBitMask = 2
+        player.physicsBody!.collisionBitMask = 2
         addChild(player)
     }
     
@@ -89,10 +104,23 @@ class GameScene: SKScene {
         circle.position = CGPointMake(frame.midX, frame.midY)
         circle.strokeColor = SKColor.blackColor()
         
-        // if you want the circle to start moving add this
-        //circle.physicsBody = SKPhysicsBody(circleOfRadius: 300)
         
+        // if you want the circle to start moving add this
+        circle.physicsBody = SKPhysicsBody(circleOfRadius: 300)
+        circle.physicsBody!.categoryBitMask = 2
+        circle.physicsBody!.contactTestBitMask = 1
+        circle.physicsBody!.collisionBitMask = 1
         self.addChild(circle)
+    }
+    
+    
+    func didBegin(contact: SKPhysicsContact) {
+        print("hey")
+        print(contact.bodyA.node?.name)
+        
+        //if contact.bodyA.node?.name == "ball" {
+        //    collisionBetween(ball: contact.bodyA.node!, object: contact.bodyB.node!)
+        //}
     }
     
     
