@@ -28,6 +28,8 @@ class GameScene: SKScene {
         
         createPlayer()
         
+        createCircle()
+        
         //removing the gravity from the player
         physicsWorld.gravity = CGVector(dx: 0, dy: 0)
         
@@ -81,5 +83,17 @@ class GameScene: SKScene {
         player.physicsBody!.collisionBitMask = CollisionTypes.wall.rawValue*/
         addChild(player)
     }
+    
+    func createCircle(){
+        let circle = SKShapeNode(circleOfRadius: 300 )
+        circle.position = CGPointMake(frame.midX, frame.midY)
+        circle.strokeColor = SKColor.blackColor()
+        
+        // if you want the circle to start moving add this
+        //circle.physicsBody = SKPhysicsBody(circleOfRadius: 300)
+        
+        self.addChild(circle)
+    }
+    
     
 }
