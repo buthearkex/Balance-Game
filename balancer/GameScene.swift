@@ -11,9 +11,10 @@ import SpriteKit
 
 
 //Different collision types in the game
-enum CollisionObjects:UInt32 {
+enum CollisionTypes:UInt32 {
     case player = 1
     case circle = 2
+    case test = 4
     // next on ewould be 4 and 8
 }
 
@@ -36,7 +37,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         //self.addChild(myLabel)
         
-        physicsWorld.contactDelegate = self
         
         createPlayer()
         
@@ -44,6 +44,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         //removing the gravity from the player
         physicsWorld.gravity = CGVector(dx: 0, dy: 0)
+        //set delegate to take care of the collisiions
+        physicsWorld.contactDelegate = self
         
         //start the sensors
         motionManager = CMMotionManager()
@@ -59,21 +61,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
        /* Called when a touch begins */
         
-        /*for touch in touches {
-            let location = touch.locationInNode(self)
-            
-            let sprite = SKSpriteNode(imageNamed:"Spaceship")
-             
-            sprite.xScale = 0.5
-            sprite.yScale = 0.5
-            sprite.position = location
-            
-            let action = SKAction.rotateByAngle(CGFloat(M_PI), duration:1)
-            
-            sprite.runAction(SKAction.repeatActionForever(action))
-            
-            self.addChild(sprite)
-        }*/
     }
    
     override func update(currentTime: CFTimeInterval) {
@@ -86,41 +73,37 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func createPlayer() {
         player = SKSpriteNode(imageNamed: "SKSpriteNode")
-        player.position = CGPoint(x: 500, y: 672)
+        player.position = CGPoint(x: 100, y: 100)
         player.physicsBody = SKPhysicsBody(circleOfRadius: player.size.width / 2)
         player.physicsBody!.allowsRotation = false
         player.physicsBody!.linearDamping = 0.5
         
-        /*player.physicsBody!.categoryBitMask = CollisionTypes.player.rawValue
-        player.physicsBody!.contactTestBitMask = CollisionTypes.star.rawValue | CollisionTypes.vortex.rawValue | CollisionTypes.finish.rawValue*/
-        player.physicsBody!.categoryBitMask = 1
-        player.physicsBody!.contactTestBitMask = 2
-        player.physicsBody!.collisionBitMask = 2
+        player.physicsBody!.categoryBitMask = CollisionTypes.player.rawValue
+        player.physicsBody!.contactTestBitMask = CollisionTypes.circle.rawValue
+        player.physicsBody!.collisionBitMask = CollisionTypes.test.rawValue
         addChild(player)
     }
     
     func createCircle(){
-        let circle = SKShapeNode(circleOfRadius: 300 )
+        let circle = SKShapeNode(circleOfRadius: 100 )
         circle.position = CGPointMake(frame.midX, frame.midY)
         circle.strokeColor = SKColor.blackColor()
         
         
         // if you want the circle to start moving add this
-        circle.physicsBody = SKPhysicsBody(circleOfRadius: 300)
-        circle.physicsBody!.categoryBitMask = 2
-        circle.physicsBody!.contactTestBitMask = 1
-        circle.physicsBody!.collisionBitMask = 1
+        circle.physicsBody = SKPhysicsBody(circleOfRadius: 100)
+        circle.physicsBody!.categoryBitMask = CollisionTypes.circle.rawValue
+        circle.physicsBody!.contactTestBitMask = CollisionTypes.player.rawValue
+        circle.physicsBody!.collisionBitMask = CollisionTypes.test.rawValue
+        circle.physicsBody?.dynamic = false
         self.addChild(circle)
     }
     
     
-    func didBegin(contact: SKPhysicsContact) {
-        print("hey")
-        print(contact.bodyA.node?.name)
-        
-        //if contact.bodyA.node?.name == "ball" {
-        //    collisionBetween(ball: contact.bodyA.node!, object: contact.bodyB.node!)
-        //}
+    func didBeginContact(contact: SKPhysicsContact) {
+        player.removeFromParent()
+        createPlayer()
+        print("noin")
     }
     
     
