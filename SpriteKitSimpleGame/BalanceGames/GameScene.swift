@@ -28,6 +28,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var motionManager: CMMotionManager!
     var lastTouchPosition: CGPoint?
     
+    var backButton = SKLabelNode(fontNamed: "Helvetica Neue UltraLight")
+    
     override func didMove(to view: SKView) {
 
         backgroundColor = SKColor.gray
@@ -37,6 +39,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         createCircle()
         createBall()
+        
+        backButton.text = "< Back to menu"
+        backButton.fontColor = SKColor.black
+        backButton.fontSize = 16
+        backButton.position = CGPoint(x: 100, y: size.height - 50)
+        addChild(backButton)
         
         motionManager = CMMotionManager()
         motionManager.startAccelerometerUpdates()
@@ -59,9 +67,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         circle.strokeColor = SKColor.black
         circle.glowWidth = 1.0
         circle.fillColor = SKColor.gray
-//        circle.physicsBody = SKPhysicsBody(circleOfRadius: circleRadius)
-//        circle.physicsBody!.categoryBitMask = CollisionCategory.Circle
-//        circle.physicsBody!.contactTestBitMask = CollisionCategory.Ball
         addChild(circle)
     }
     
@@ -82,16 +87,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         #endif
         
         if (checkPosition() == false){
-//            let gameOverScene = GameOverScene(fileNamed: "GameOverScene")
-//            let transition = SKTransition.fade(withDuration: 0.15)
-//            self.view!.presentScene(gameOverScene, transition: transition)
-            
             
             let gameOverScene = GameOverScene(fileNamed: "GameOverScene")
             let transition = SKTransition.fade(withDuration: 0.15)
             self.view!.presentScene(gameOverScene!, transition: transition)
-            
-            //ball.position = CGPoint(x: size.width/2, y: size.height/2)
+
         }
     }
     
@@ -125,6 +125,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         lastTouchPosition = nil
+        if let touch = touches.first {
+            if backButton.contains(touch.location(in: self)){
+                let toMenu = StartMenu(fileNamed: "StartMenu")
+                let transition = SKTransition.fade(withDuration: 0.15)
+                self.view!.presentScene(toMenu!, transition: transition)
+            }
+        }
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>?, with event: UIEvent?) {

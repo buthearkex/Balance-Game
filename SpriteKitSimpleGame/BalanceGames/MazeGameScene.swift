@@ -28,6 +28,7 @@ class MazeGameScene: SKScene, SKPhysicsContactDelegate{
     
     var isGameOver = false
     
+    var backButton: SKLabelNode!
     var scoreLabel: SKLabelNode!
     
     var score: Int = 0 {
@@ -45,6 +46,25 @@ class MazeGameScene: SKScene, SKPhysicsContactDelegate{
         createMap()
         createPlayer()
         
+        // add callback to button and activate sensors in that function
+        let button = UIButton(type: .system)
+        button.setTitle("OK", for: .normal)
+//        button.addTarget(responder, action: "tap", forControlEvents: .TouchUpInside)
+        button.sizeToFit()
+        button.center = CGPoint(x: 50, y: 25)
+        
+        let textLabel = UILabel(frame: CGRect(x: size.width / 2 - 50, y: size.height / 2 - 25, width: 80, height: 30))
+        textLabel.text = "Collect all stars to finish!"
+        textLabel.center = CGPoint(x: 50, y: 0)
+        
+        
+        let frame = CGRect(x: size.width / 2 - 50, y: size.height / 2 - 25, width: 100, height: 50)
+        let view = UIView(frame: frame)
+        view.backgroundColor = SKColor.blue
+        view.addSubview(textLabel)
+        view.addSubview(button)
+        self.view?.addSubview(view)
+        
         motionManager = CMMotionManager()
         motionManager.startAccelerometerUpdates()
         
@@ -52,13 +72,20 @@ class MazeGameScene: SKScene, SKPhysicsContactDelegate{
         screenBorders.friction = 0
         self.physicsBody = screenBorders
         
-        
         scoreLabel = SKLabelNode(fontNamed: "AppleSDGothicNeo-Medium")
-        scoreLabel.name = "backbutton"
         scoreLabel.text = "Score: 0"
+        scoreLabel.fontColor = SKColor.black
+        scoreLabel.fontSize = 20
         scoreLabel.horizontalAlignmentMode = .left
         scoreLabel.position = CGPoint(x: 16, y: 16)
         addChild(scoreLabel)
+        
+        backButton = SKLabelNode(fontNamed: "AppleSDGothicNeo-Medium")
+        backButton.text = "< Back to menu"
+        backButton.fontColor = SKColor.black
+        backButton.fontSize = 16
+        backButton.position = CGPoint(x: 80, y: size.height - 30)
+        addChild(backButton)
     }
     
     private func createMap(){
@@ -76,7 +103,7 @@ class MazeGameScene: SKScene, SKPhysicsContactDelegate{
                         //height should be height/numberOfElements
                         elementHeight = Int(size.height) / lines.count
                         
-                        let position = CGPoint(x: (elementWidth * column) + 10, y: (elementHeight * row) + 10)
+                        let position = CGPoint(x: (elementWidth * column) + 30, y: (elementHeight * row) + 10)
                         
                         if letter == "x" {
                             createWall(position: position)
@@ -94,7 +121,7 @@ class MazeGameScene: SKScene, SKPhysicsContactDelegate{
     }
     
     private func createGoal(position:CGPoint){
-        let node = SKSpriteNode(imageNamed: "flag white-1")
+        let node = SKSpriteNode(imageNamed: "flag")
         node.name = "finish"
         node.physicsBody = SKPhysicsBody(circleOfRadius: node.size.width / 2)
         node.physicsBody!.isDynamic = false
@@ -131,14 +158,15 @@ class MazeGameScene: SKScene, SKPhysicsContactDelegate{
     }
     
     private func createHole(position: CGPoint){
-        let node = SKSpriteNode(imageNamed: "trap")
-        node.name = "vortex"
+        let trapTexture = SKTexture(imageNamed: "trap.png")
+        let node = SKSpriteNode(texture: trapTexture)
+        node.name = "trap"
         node.position = position
-        //node.run(SKAction.repeatForever(SKAction.rotate(byAngle: CGFloat.pi, duration: 1)))
-        node.physicsBody = SKPhysicsBody(circleOfRadius: node.size.width / 2)
+        //let node2 = SKPhysicsBody(circleOfRadius: node.size.width / 2)
+        let circularSpaceShip = SKSpriteNode(texture: trapTexture)
+        node.physicsBody = SKPhysicsBody(texture: trapTexture, size: CGSize(width: circularSpaceShip.size.width, height: circularSpaceShip.size.height))
         node.setScale(0.2)
         node.physicsBody!.isDynamic = false
-        
         node.physicsBody!.categoryBitMask = CollisionTypes.hole.rawValue
         node.physicsBody!.contactTestBitMask = CollisionTypes.ball.rawValue
         node.physicsBody!.collisionBitMask = 0
@@ -181,10 +209,10 @@ class MazeGameScene: SKScene, SKPhysicsContactDelegate{
     }
     
     func ballCollided(with node: SKNode) {
-        if node.name == "vortex" {
+        if node.name == "trap" {
             ball.physicsBody!.isDynamic = false
             isGameOver = true
-            score -= 1
+//            score -= 1
             
             let move = SKAction.move(to: node.position, duration: 0.25)
             let scale = SKAction.scale(to: 0.0001, duration: 0.25)
@@ -199,9 +227,11 @@ class MazeGameScene: SKScene, SKPhysicsContactDelegate{
             node.removeFromParent()
             score += 1
         } else if node.name == "finish" {
-            let finishScene = GameFinishedScene(size: self.size , points: score)
-            let transition = SKTransition.fade(withDuration: 0.15)
-            self.view!.presentScene(finishScene, transition: transition)
+            if(score == 8){
+                let finishScene = GameFinishedScene(fileNamed: "GameFinishedScene")
+                let transition = SKTransition.fade(withDuration: 0.15)
+                self.view!.presentScene(finishScene!, transition: transition)
+            }
         }
     }
     
@@ -230,6 +260,13 @@ class MazeGameScene: SKScene, SKPhysicsContactDelegate{
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         lastTouchPosition = nil
+        if let touch = touches.first {
+            if backButton.contains(touch.location(in: self)){
+                let toMenu = StartMenu(fileNamed: "StartMenu")
+                let transition = SKTransition.fade(withDuration: 0.15)
+                self.view!.presentScene(toMenu!, transition: transition)
+            }
+        }
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>?, with event: UIEvent?) {

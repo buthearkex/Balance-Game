@@ -59,9 +59,6 @@ class GameOverScene: SKScene {
                 self.view!.presentScene(newGame, transition: transition)
             }
             if toMenuLabel.contains(touch.location(in: self)){
-//                let toMenu = StartMenu(size: view!.bounds.size)
-//                let transition = SKTransition.fade(withDuration: 0.15)
-//                self.view!.presentScene(toMenu, transition: transition)
                 
                 let toMenu = StartMenu(fileNamed: "StartMenu")
                 let transition = SKTransition.fade(withDuration: 0.15)
