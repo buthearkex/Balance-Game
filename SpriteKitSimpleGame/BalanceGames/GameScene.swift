@@ -39,13 +39,44 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         createCircle()
         createBall()
+        createInstructionsDialog()
         
+        // create back button
         backButton.text = "< Back to menu"
         backButton.fontColor = SKColor.black
         backButton.fontSize = 16
         backButton.position = CGPoint(x: 100, y: size.height - 50)
         addChild(backButton)
         
+    }
+    
+    private func createInstructionsDialog(){
+        let button = UIButton(type: .system)
+        button.setTitle("OK", for: .normal)
+        button.addTarget(self, action: #selector(self.instructionsRead(_:)), for: .touchDown)
+        button.sizeToFit()
+        button.center = CGPoint(x: 100, y: 120)
+        
+        let textLabel = UILabel(frame: CGRect(x: 1, y: 1, width: 200, height: 200))
+        textLabel.text = "Stay inside the circle\nas long as you can!"
+        textLabel.lineBreakMode = NSLineBreakMode.byWordWrapping
+        textLabel.numberOfLines = 3
+        textLabel.center = CGPoint(x: 120, y: 50)
+        
+        let frame = CGRect(x: size.width / 2 - 100, y: size.height / 2 - 75, width: 200, height: 150)
+        let view = UIView(frame: frame)
+        view.tag = 100
+        view.backgroundColor = SKColor.white
+        view.addSubview(textLabel)
+        view.addSubview(button)
+        self.view?.addSubview(view)
+    }
+    
+    func instructionsRead(_ button: UIButton) {
+        // remove dialog
+        self.view!.viewWithTag(100)!.removeFromSuperview()
+        
+        //activate sensors
         motionManager = CMMotionManager()
         motionManager.startAccelerometerUpdates()
     }
@@ -58,7 +89,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         ball.physicsBody!.categoryBitMask = CollisionCategory.Ball
         ball.physicsBody!.contactTestBitMask = CollisionCategory.Circle
-        //ball.physicsBody!.collisionBitMask = CollisionTypes.wall.rawValue
         addChild(ball)
     }
     
@@ -68,10 +98,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         circle.glowWidth = 1.0
         circle.fillColor = SKColor.gray
         addChild(circle)
-    }
-    
-    func didBegin(_ contact: SKPhysicsContact) {
-    
     }
     
     override func update(_ currentTime: TimeInterval) {

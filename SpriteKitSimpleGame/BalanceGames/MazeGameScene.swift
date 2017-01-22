@@ -45,33 +45,14 @@ class MazeGameScene: SKScene, SKPhysicsContactDelegate{
         
         createMap()
         createPlayer()
+        createInstructionsDialog()
         
-        // add callback to button and activate sensors in that function
-        let button = UIButton(type: .system)
-        button.setTitle("OK", for: .normal)
-//        button.addTarget(responder, action: "tap", forControlEvents: .TouchUpInside)
-        button.sizeToFit()
-        button.center = CGPoint(x: 50, y: 25)
-        
-        let textLabel = UILabel(frame: CGRect(x: size.width / 2 - 50, y: size.height / 2 - 25, width: 80, height: 30))
-        textLabel.text = "Collect all stars to finish!"
-        textLabel.center = CGPoint(x: 50, y: 0)
-        
-        
-        let frame = CGRect(x: size.width / 2 - 50, y: size.height / 2 - 25, width: 100, height: 50)
-        let view = UIView(frame: frame)
-        view.backgroundColor = SKColor.blue
-        view.addSubview(textLabel)
-        view.addSubview(button)
-        self.view?.addSubview(view)
-        
-        motionManager = CMMotionManager()
-        motionManager.startAccelerometerUpdates()
-        
+        //block ball inside the screen borders
         let screenBorders = SKPhysicsBody(edgeLoopFrom: self.frame)
         screenBorders.friction = 0
         self.physicsBody = screenBorders
         
+        // create label for showing the score
         scoreLabel = SKLabelNode(fontNamed: "AppleSDGothicNeo-Medium")
         scoreLabel.text = "Score: 0"
         scoreLabel.fontColor = SKColor.black
@@ -80,12 +61,45 @@ class MazeGameScene: SKScene, SKPhysicsContactDelegate{
         scoreLabel.position = CGPoint(x: 16, y: 16)
         addChild(scoreLabel)
         
+        // create label for showing the back button
         backButton = SKLabelNode(fontNamed: "AppleSDGothicNeo-Medium")
         backButton.text = "< Back to menu"
         backButton.fontColor = SKColor.black
         backButton.fontSize = 16
         backButton.position = CGPoint(x: 80, y: size.height - 30)
         addChild(backButton)
+    }
+    
+    private func createInstructionsDialog(){
+        let button = UIButton(type: .system)
+        button.setTitle("OK", for: .normal)
+        button.addTarget(self, action: #selector(self.instructionsRead(_:)), for: .touchDown)
+        button.sizeToFit()
+        button.center = CGPoint(x: 100, y: 120)
+        
+        let textLabel = UILabel(frame: CGRect(x: 1, y: 1, width: 200, height: 200))
+        textLabel.text = "You must collect all\nstars to finish!"
+        textLabel.lineBreakMode = NSLineBreakMode.byWordWrapping
+        textLabel.numberOfLines = 3
+        textLabel.center = CGPoint(x: 120, y: 50)
+        
+        
+        let frame = CGRect(x: size.width / 2 - 100, y: size.height / 2 - 75, width: 200, height: 150)
+        let view = UIView(frame: frame)
+        view.tag = 100
+        view.backgroundColor = SKColor(red: 0.8, green: 0.8, blue: 0.8, alpha: 1.0)
+        view.addSubview(textLabel)
+        view.addSubview(button)
+        self.view?.addSubview(view)
+    }
+    
+    func instructionsRead(_ button: UIButton) {
+        // remove dialog
+        self.view!.viewWithTag(100)!.removeFromSuperview()
+        
+        //activate sensors
+        motionManager = CMMotionManager()
+        motionManager.startAccelerometerUpdates()
     }
     
     private func createMap(){
