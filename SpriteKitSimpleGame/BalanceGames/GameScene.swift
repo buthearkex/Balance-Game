@@ -107,9 +107,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 physicsWorld.gravity = CGVector(dx: diff.x / 100, dy: diff.y / 100)
             }
         #else
+        
+        if let motionManager = self.motionManager {
             if let accelerometerData = motionManager.accelerometerData {
                 physicsWorld.gravity = CGVector(dx: accelerometerData.acceleration.y * -50, dy: accelerometerData.acceleration.x * 50)
             }
+        }
         #endif
         
         if (checkPosition() == false){
@@ -153,6 +156,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         lastTouchPosition = nil
         if let touch = touches.first {
             if backButton.contains(touch.location(in: self)){
+                if let instructions = self.view?.viewWithTag(100)!{
+                    instructions.removeFromSuperview()
+                }
+                
                 let toMenu = StartMenu(fileNamed: "StartMenu")
                 let transition = SKTransition.fade(withDuration: 0.15)
                 self.view!.presentScene(toMenu!, transition: transition)
