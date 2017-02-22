@@ -1,6 +1,6 @@
 //
 //  MazeGameScene.swift
-//  SpriteKitSimpleGame
+//  BalanceGame
 //
 //  Created by Mikko on 01/01/2017.
 //  Copyright © 2017 Mikko. All rights reserved.
@@ -18,16 +18,15 @@ import CoreMotion
 import SpriteKit
 import TremorTrackerFramework
 import UIKit
-//import MessageUI
 
-class MazeGameScene: SKScene, SKPhysicsContactDelegate { //, MFMailComposeViewControllerDelegate{
+class MazeGameScene: SKScene, SKPhysicsContactDelegate {
     
     var ball: SKSpriteNode!
     var elementWidth = 0
     var elementHeight = 0
     
     var motionManager: CMMotionManager!
-    var lastTouchPosition: CGPoint?
+    var touchedPosition: CGPoint?
     
     var isGameOver = false
     
@@ -79,6 +78,7 @@ class MazeGameScene: SKScene, SKPhysicsContactDelegate { //, MFMailComposeViewCo
     private func createInstructionsDialog(){
         let button = UIButton(type: .system)
         button.setTitle("OK", for: .normal)
+        //bug for pressing outside of dialog
         button.addTarget(self, action: #selector(self.instructionsRead(_:)), for: .touchDown)
         button.sizeToFit()
         button.center = CGPoint(x: 100, y: 120)
@@ -109,10 +109,7 @@ class MazeGameScene: SKScene, SKPhysicsContactDelegate { //, MFMailComposeViewCo
         
         tremorTracker = TremorTracker(motionManager: motionManager)
         
-        _ = tremorTracker?.startMeasuringSession{ (intermediateResults) in
-            print(intermediateResults)
-        }
-        
+        _ = tremorTracker?.startMeasuringSession(callback: nil)
         
     }
     
@@ -190,7 +187,6 @@ class MazeGameScene: SKScene, SKPhysicsContactDelegate { //, MFMailComposeViewCo
         let node = SKSpriteNode(texture: trapTexture)
         node.name = "trap"
         node.position = position
-        //let node2 = SKPhysicsBody(circleOfRadius: node.size.width / 2)
         let circularSpaceShip = SKSpriteNode(texture: trapTexture)
         node.physicsBody = SKPhysicsBody(texture: trapTexture, size: CGSize(width: circularSpaceShip.size.width, height: circularSpaceShip.size.height))
         node.setScale(0.2)
@@ -217,7 +213,7 @@ class MazeGameScene: SKScene, SKPhysicsContactDelegate { //, MFMailComposeViewCo
     
     override func update(_ currentTime: TimeInterval) {
         #if (arch(i386) || arch(x86_64))
-            if let currentTouch = lastTouchPosition {
+            if let currentTouch = touchedPosition {
                 let diff = CGPoint(x: currentTouch.x - ball.position.x, y: currentTouch.y - ball.position.y)
                 physicsWorld.gravity = CGVector(dx: diff.x / 100, dy: diff.y / 100)
             }
@@ -246,7 +242,6 @@ class MazeGameScene: SKScene, SKPhysicsContactDelegate { //, MFMailComposeViewCo
         if node.name == "trap" {
             ball.physicsBody!.isDynamic = false
             isGameOver = true
-//            score -= 1
             
             let move = SKAction.move(to: node.position, duration: 0.1)
             let scale = SKAction.scale(to: 0.0001, duration: 0.1)
@@ -262,12 +257,17 @@ class MazeGameScene: SKScene, SKPhysicsContactDelegate { //, MFMailComposeViewCo
             score += 1
         } else if node.name == "finish" {
             if(score == 8){
+                
+                // send data as email
+                tremorTracker?.stopMeasuringSession()
+                let result = "MazeGame " + tremorTracker!.getCSVStringFromSessionData()
+                
                 let finishScene = GameFinishedScene(fileNamed: "GameFinishedScene")
+                finishScene?.userData = NSMutableDictionary()
+                finishScene?.userData?.setValue(result, forKey: "resultcsv")
                 let transition = SKTransition.fade(withDuration: 0.15)
                 self.view!.presentScene(finishScene!, transition: transition)
                 
-                print(logs)
-                logs = [String]()
             }
         }
     }
@@ -278,83 +278,38 @@ class MazeGameScene: SKScene, SKPhysicsContactDelegate { //, MFMailComposeViewCo
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let touch = touches.first {
             let location = touch.location(in: self)
-            lastTouchPosition = location
+            touchedPosition = location
             
-//            if scoreLabel.contains(touch.location(in: self)){
-//                let startMenu = StartMenu(size: view!.bounds.size)
-//                let transition = SKTransition.fade(withDuration: 0.15)
-//                self.view!.presentScene(startMenu, transition: transition)
-//            }
             if let instructions = self.view?.viewWithTag(100){
                 instructions.removeFromSuperview()
             }
             if backButton.contains(touch.location(in: self)){
                 
+                
+                tremorTracker?.stopMeasuringSession()
+                let result = "MazeGame " + tremorTracker!.getCSVStringFromSessionData()
                 let toMenu = StartMenu(fileNamed: "StartMenu")
+                toMenu?.userData = NSMutableDictionary()
+                toMenu?.userData?.setValue(result, forKey: "resultcsv")
                 let transition = SKTransition.fade(withDuration: 0.15)
                 self.view!.presentScene(toMenu!, transition: transition)
                 
-                print(logs)
-                
-                let file = String(NSDate().timeIntervalSince1970) + ".txt" //this is the file. we will write to and read from it
-                
-                let text = logs.joined(separator: "-")
-                
-                let gvc:GameViewController = UIApplication.shared.keyWindow?.rootViewController as! GameViewController
-                
-                gvc.sendEmail(text: tremorTracker!.getCSVStringFromSessionData())
-                
-                if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
-                    
-                    let path = dir.appendingPathComponent(file)
-                    
-                    //writing
-                    do {
-                        try text.write(to: path, atomically: false, encoding: String.Encoding.utf8)
-                    }
-                    catch {
-                        // errors here
-                        
-                    }
-                    
-                }
-                
-//                sendEmail(text: text)
-                
-                logs = [String]()
             }
         }
     }
     
-//    func sendEmail(text:String) {
-//        if MFMailComposeViewController.canSendMail() {
-//            let mail = MFMailComposeViewController()
-//            mail.mailComposeDelegate = self
-//            mail.setToRecipients(["mikko@campus.tu-berlin.de"])
-//            mail.setMessageBody(text, isHTML: true)
-//            
-//            present(mail, animated: true)
-//        } else {
-//            // show failure alert
-//        }
-//    }
-//    
-//    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
-//        controller.dismiss(animated: true)
-//    }
-    
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let touch = touches.first {
             let location = touch.location(in: self)
-            lastTouchPosition = location
+            touchedPosition = location
         }
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        lastTouchPosition = nil
+        touchedPosition = nil
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>?, with event: UIEvent?) {
-        lastTouchPosition = nil
+        touchedPosition = nil
     }
 }

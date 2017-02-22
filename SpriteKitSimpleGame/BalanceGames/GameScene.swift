@@ -1,6 +1,6 @@
 //
 //  GameScene.swift
-//  SpriteKitSimpleGame
+//  BalanceGame
 //
 //  Created by Mikko on 31/12/2016.
 //  Copyright © 2016 Mikko. All rights reserved.
@@ -27,7 +27,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let circle = SKShapeNode(circleOfRadius: 150)
     
     var motionManager: CMMotionManager!
-    var lastTouchPosition: CGPoint?
+    var touchedPoint: CGPoint?
     
     var backButton = SKLabelNode(fontNamed: "Helvetica Neue UltraLight")
     
@@ -89,19 +89,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         tremorTracker?.startMeasuringSession(callback: nil)
         
-        //new implementation
-//        if motionManager.isAccelerometerAvailable {
-//            motionManager.accelerometerUpdateInterval = 0.01
-//            motionManager.startAccelerometerUpdates(to: OperationQueue.main) {
-//                [weak self] (data: CMAccelerometerData?, error: Error?) in
-//                if let acceleration = data?.acceleration {
-//                    print(NSDate().timeIntervalSince1970)
-//                    //let rotation = atan2(acceleration.x, acceleration.y) - M_PI
-//                    //self?.imageView.transform = CGAffineTransform(rotationAngle: rotation)
-//                }
-//            }
-//        }
-        
     }
     
     private func createBall(){
@@ -125,7 +112,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     override func update(_ currentTime: TimeInterval) {
         #if (arch(i386) || arch(x86_64))
-            if let currentTouch = lastTouchPosition {
+            if let currentTouch = touchedPoint {
                 let diff = CGPoint(x: currentTouch.x - ball.position.x, y: currentTouch.y - ball.position.y)
                 physicsWorld.gravity = CGVector(dx: diff.x / 100, dy: diff.y / 100)
                 // for debugging
@@ -135,7 +122,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         if let motionManager = self.motionManager {
             if let accelerometerData = motionManager.accelerometerData {
-//                print(acceleromaterData)
                 physicsWorld.gravity = CGVector(dx: accelerometerData.acceleration.y * -50, dy: accelerometerData.acceleration.x * 50)
             }
         }
@@ -143,7 +129,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         if (checkPosition() == false){
             
+            // send data as email
+            tremorTracker?.stopMeasuringSession()
+            let result = "CircleGame " + tremorTracker!.getCSVStringFromSessionData()
             let gameOverScene = GameOverScene(fileNamed: "GameOverScene")
+            gameOverScene?.userData = NSMutableDictionary()
+            gameOverScene?.userData?.setValue(result, forKey: "resultcsv")
             let transition = SKTransition.fade(withDuration: 0.15)
             self.view!.presentScene(gameOverScene!, transition: transition)
 
@@ -167,26 +158,31 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let touch = touches.first {
             let location = touch.location(in: self)
-            lastTouchPosition = location
+            touchedPoint = location
         }
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let touch = touches.first {
             let location = touch.location(in: self)
-            lastTouchPosition = location
+            touchedPoint = location
         }
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        lastTouchPosition = nil
+        touchedPoint = nil
         if let touch = touches.first {
             if backButton.contains(touch.location(in: self)){
                 if let instructions = self.view?.viewWithTag(100){
                     instructions.removeFromSuperview()
                 }
                 
+                // send data as email
+                let result = "CircleGame " + tremorTracker!.getCSVStringFromSessionData()
                 let toMenu = StartMenu(fileNamed: "StartMenu")
+                toMenu?.userData = NSMutableDictionary()
+                toMenu?.userData?.setValue(result, forKey: "resultcsv")
+                
                 let transition = SKTransition.fade(withDuration: 0.15)
                 self.view!.presentScene(toMenu!, transition: transition)
             }
@@ -194,62 +190,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>?, with event: UIEvent?) {
-        lastTouchPosition = nil
+        touchedPoint = nil
     }
-    
-    
-    // stuff for saving csv formatted accelerator data
-//    var dataDump = [(String, String, String)]()
-//    let filepath = ""
-//    let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
-//    var lastOp: CSVDumpOperation?
-//    
-//    func addDataTuple(accelerometerData: (String, String, String)) {
-//        dataDump.append(accelerometerData)
-//        
-//        if dataDump.count >= 300 {
-//            let toBeDump = dataDump
-//            dataDump = [(String, String, String)]()
-//            dumpArray(data: toBeDump)
-//        }
-//    }
-//    
-//    func dumpArray(data: [(String, String, String)]!) {
-//        let op = CSVDumpOperation(file: paths, data: data)
-//        if lastOp != nil && !lastOp!.isFinished {
-//            op.addDependency(lastOp!)
-//        }
-//        lastOp = op
-//        // how should this work?
-////        dumpQueue.addOperation(op)
-//    }
 }
 
-
-//directly copied from http://www.mydrivesolutions.com/engineering/swift-data-collection/
-//class CSVDumpOperation: Operation {
-//    
-//    let data = [(String, String, String)]()
-//    let os : OutputStream
-//    
-//    init(file: String, data: [(String, String, String)]) {
-//        os = OutputStream(toFileAtPath: file, append: true)!
-//        os.open()
-//        
-//        super.init()
-//        
-//        self.data = data
-//    }
-//    
-//    override func main() {
-//        for row in data {
-//            let rowStr = "(row.x),(row.y),(row.z)...n"
-//            if let rowData = rowStr.data(using: String.Encoding.utf8, allowLossyConversion: false) {
-//                let bytes = UnsafePointer<UInt8>(rowData.bytes)
-//                os.write(bytes, maxLength: rowData.length)
-//            }
-//        }
-//        
-//        os.close()
-//    }
-//}
