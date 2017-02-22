@@ -17,8 +17,9 @@ import Foundation
 import CoreMotion
 import SpriteKit
 import TremorTrackerFramework
+//import MessageUI
 
-class MazeGameScene: SKScene, SKPhysicsContactDelegate{
+class MazeGameScene: SKScene, SKPhysicsContactDelegate { //, MFMailComposeViewControllerDelegate{
     
     var ball: SKSpriteNode!
     var elementWidth = 0
@@ -313,10 +314,29 @@ class MazeGameScene: SKScene, SKPhysicsContactDelegate{
                     
                 }
                 
+//                sendEmail(text: text)
+                
                 logs = [String]()
             }
         }
     }
+    
+//    func sendEmail(text:String) {
+//        if MFMailComposeViewController.canSendMail() {
+//            let mail = MFMailComposeViewController()
+//            mail.mailComposeDelegate = self
+//            mail.setToRecipients(["mikko@campus.tu-berlin.de"])
+//            mail.setMessageBody(text, isHTML: true)
+//            
+//            present(mail, animated: true)
+//        } else {
+//            // show failure alert
+//        }
+//    }
+//    
+//    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+//        controller.dismiss(animated: true)
+//    }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let touch = touches.first {

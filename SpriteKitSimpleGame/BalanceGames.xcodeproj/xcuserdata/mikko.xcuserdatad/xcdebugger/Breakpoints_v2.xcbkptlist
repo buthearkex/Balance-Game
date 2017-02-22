@@ -104,11 +104,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BalanceGames/MazeGameScene.swift"
-            timestampString = "509449042.53956"
+            timestampString = "509452643.020328"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "230"
-            endingLineNumber = "230"
+            startingLineNumber = "231"
+            endingLineNumber = "231"
             landmarkName = "update(_:)"
             landmarkType = "7">
          </BreakpointContent>

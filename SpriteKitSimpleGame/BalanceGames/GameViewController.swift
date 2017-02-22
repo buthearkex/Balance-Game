@@ -9,8 +9,9 @@
 import UIKit
 import SpriteKit
 import GameplayKit
+import MessageUI
 
-class GameViewController: UIViewController {
+class GameViewController: UIViewController, MFMailComposeViewControllerDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,6 +26,7 @@ class GameViewController: UIViewController {
 //        scene.scaleMode = .resizeFill
 //        skView.presentScene(scene)
         
+//        sendEmail(text: "hei")
         
         if let scene = StartMenu(fileNamed:"StartMenu") {
             let skView = self.view as! SKView
@@ -71,4 +73,22 @@ class GameViewController: UIViewController {
     override var prefersStatusBarHidden: Bool {
         return true
     }
+    
+    func sendEmail(text:String) {
+        if MFMailComposeViewController.canSendMail() {
+            let mail = MFMailComposeViewController()
+            mail.mailComposeDelegate = self
+            mail.setToRecipients(["mikko@campus.tu-berlin.de"])
+            mail.setMessageBody("moi", isHTML: true)
+            
+            present(mail, animated: true)
+        } else {
+            // show failure alert
+        }
+    }
+    
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        controller.dismiss(animated: true)
+    }
+    
 }

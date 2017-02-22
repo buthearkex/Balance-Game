@@ -18,21 +18,19 @@
 		C023AE871E18EFE7004F4F52 /* StartMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = C023AE861E18EFE7004F4F52 /* StartMenu.swift */; };
 		C023AE891E190D40004F4F52 /* MazeGameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = C023AE881E190D40004F4F52 /* MazeGameScene.swift */; };
 		C023AE8D1E193AA1004F4F52 /* level1.txt in Resources */ = {isa = PBXBuildFile; fileRef = C023AE8C1E193AA1004F4F52 /* level1.txt */; };
+		C02CB7671E5D9F7400E47547 /* TremorTrackerFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C02CB7661E5D9F7400E47547 /* TremorTrackerFramework.framework */; };
 		C072443E1E32097900565C16 /* GameOverScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = C072443D1E32097900565C16 /* GameOverScene.sks */; };
-		C075D73D1E5D8FFC00603DE7 /* TremorTrackerFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C075D73B1E5D8FEB00603DE7 /* TremorTrackerFramework.framework */; };
-		C075D73E1E5D8FFC00603DE7 /* TremorTrackerFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C075D73B1E5D8FEB00603DE7 /* TremorTrackerFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C089C35D1E1E32E200AD931F /* GameFinishedScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = C089C35C1E1E32E200AD931F /* GameFinishedScene.swift */; };
 		C0CA5F6E1E30B3CE001CFB20 /* StartMenu.sks in Resources */ = {isa = PBXBuildFile; fileRef = C0CA5F6D1E30B3CE001CFB20 /* StartMenu.sks */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		C075D73F1E5D8FFC00603DE7 /* Embed Frameworks */ = {
+		C03134CB1E5D976F0074C9D6 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				C075D73E1E5D8FFC00603DE7 /* TremorTrackerFramework.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -53,8 +51,8 @@
 		C023AE861E18EFE7004F4F52 /* StartMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StartMenu.swift; sourceTree = "<group>"; };
 		C023AE881E190D40004F4F52 /* MazeGameScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MazeGameScene.swift; sourceTree = "<group>"; };
 		C023AE8C1E193AA1004F4F52 /* level1.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = level1.txt; sourceTree = "<group>"; };
+		C02CB7661E5D9F7400E47547 /* TremorTrackerFramework.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TremorTrackerFramework.framework; sourceTree = "<group>"; };
 		C072443D1E32097900565C16 /* GameOverScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameOverScene.sks; sourceTree = "<group>"; };
-		C075D73B1E5D8FEB00603DE7 /* TremorTrackerFramework.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TremorTrackerFramework.framework; sourceTree = "<group>"; };
 		C089C35C1E1E32E200AD931F /* GameFinishedScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameFinishedScene.swift; sourceTree = "<group>"; };
 		C0CA5F6D1E30B3CE001CFB20 /* StartMenu.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = StartMenu.sks; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -64,7 +62,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C075D73D1E5D8FFC00603DE7 /* TremorTrackerFramework.framework in Frameworks */,
+				C02CB7671E5D9F7400E47547 /* TremorTrackerFramework.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -76,7 +74,7 @@
 			children = (
 				C023AE691E1789E0004F4F52 /* SpriteKitSimpleGame */,
 				C023AE681E1789E0004F4F52 /* Products */,
-				C075D73B1E5D8FEB00603DE7 /* TremorTrackerFramework.framework */,
+				C02CB7661E5D9F7400E47547 /* TremorTrackerFramework.framework */,
 			);
 			sourceTree = "<group>";
 		};
@@ -137,7 +135,7 @@
 				C023AE631E1789E0004F4F52 /* Sources */,
 				C023AE641E1789E0004F4F52 /* Frameworks */,
 				C023AE651E1789E0004F4F52 /* Resources */,
-				C075D73F1E5D8FFC00603DE7 /* Embed Frameworks */,
+				C03134CB1E5D976F0074C9D6 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
