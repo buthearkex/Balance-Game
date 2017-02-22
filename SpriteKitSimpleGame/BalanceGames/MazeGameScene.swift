@@ -16,6 +16,7 @@ enum CollisionTypes: UInt32 {
 import Foundation
 import CoreMotion
 import SpriteKit
+import TremorTrackerFramework
 
 class MazeGameScene: SKScene, SKPhysicsContactDelegate{
     
@@ -36,6 +37,9 @@ class MazeGameScene: SKScene, SKPhysicsContactDelegate{
             scoreLabel.text = "Score: \(score)"
         }
     }
+    
+    var logs = [String]()
+    var tremorTracker: TremorTracker?
     
     override func didMove(to view: SKView) {
         backgroundColor = SKColor(red: 255,green: 246,blue: 217,alpha: 100)
@@ -100,6 +104,14 @@ class MazeGameScene: SKScene, SKPhysicsContactDelegate{
         //activate sensors
         motionManager = CMMotionManager()
         motionManager.startAccelerometerUpdates()
+        
+        tremorTracker = TremorTracker(motionManager: motionManager)
+        
+        _ = tremorTracker?.startMeasuringSession{ (intermediateResults) in
+            print(intermediateResults)
+        }
+        
+        
     }
     
     private func createMap(){
@@ -211,7 +223,11 @@ class MazeGameScene: SKScene, SKPhysicsContactDelegate{
         if let motionManager = self.motionManager {
             if let accelerometerData = motionManager.accelerometerData {
                 physicsWorld.gravity = CGVector(dx: accelerometerData.acceleration.y * -50, dy: accelerometerData.acceleration.x * 50)
+                
+                let toLog = String(accelerometerData.acceleration.x) + " " + String(accelerometerData.acceleration.y) + " " + String(accelerometerData.acceleration.z)
+                logs.append(toLog)
             }
+            
         }
         #endif
     }
@@ -230,8 +246,8 @@ class MazeGameScene: SKScene, SKPhysicsContactDelegate{
             isGameOver = true
 //            score -= 1
             
-            let move = SKAction.move(to: node.position, duration: 0.25)
-            let scale = SKAction.scale(to: 0.0001, duration: 0.25)
+            let move = SKAction.move(to: node.position, duration: 0.1)
+            let scale = SKAction.scale(to: 0.0001, duration: 0.1)
             let remove = SKAction.removeFromParent()
             let sequence = SKAction.sequence([move, scale, remove])
             
@@ -247,6 +263,9 @@ class MazeGameScene: SKScene, SKPhysicsContactDelegate{
                 let finishScene = GameFinishedScene(fileNamed: "GameFinishedScene")
                 let transition = SKTransition.fade(withDuration: 0.15)
                 self.view!.presentScene(finishScene!, transition: transition)
+                
+                print(logs)
+                logs = [String]()
             }
         }
     }
@@ -259,10 +278,42 @@ class MazeGameScene: SKScene, SKPhysicsContactDelegate{
             let location = touch.location(in: self)
             lastTouchPosition = location
             
-            if scoreLabel.contains(touch.location(in: self)){
-                let startMenu = StartMenu(size: view!.bounds.size)
+//            if scoreLabel.contains(touch.location(in: self)){
+//                let startMenu = StartMenu(size: view!.bounds.size)
+//                let transition = SKTransition.fade(withDuration: 0.15)
+//                self.view!.presentScene(startMenu, transition: transition)
+//            }
+            if let instructions = self.view?.viewWithTag(100){
+                instructions.removeFromSuperview()
+            }
+            if backButton.contains(touch.location(in: self)){
+                
+                let toMenu = StartMenu(fileNamed: "StartMenu")
                 let transition = SKTransition.fade(withDuration: 0.15)
-                self.view!.presentScene(startMenu, transition: transition)
+                self.view!.presentScene(toMenu!, transition: transition)
+                
+                print(logs)
+                
+                let file = String(NSDate().timeIntervalSince1970) + ".txt" //this is the file. we will write to and read from it
+                
+                let text = logs.joined(separator: "-")
+                
+                if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
+                    
+                    let path = dir.appendingPathComponent(file)
+                    
+                    //writing
+                    do {
+                        try text.write(to: path, atomically: false, encoding: String.Encoding.utf8)
+                    }
+                    catch {
+                        // errors here
+                        
+                    }
+                    
+                }
+                
+                logs = [String]()
             }
         }
     }
@@ -276,16 +327,6 @@ class MazeGameScene: SKScene, SKPhysicsContactDelegate{
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         lastTouchPosition = nil
-        if let touch = touches.first {
-            if backButton.contains(touch.location(in: self)){
-                if let instructions = self.view?.viewWithTag(100)!{
-                    instructions.removeFromSuperview()
-                }
-                let toMenu = StartMenu(fileNamed: "StartMenu")
-                let transition = SKTransition.fade(withDuration: 0.15)
-                self.view!.presentScene(toMenu!, transition: transition)
-            }
-        }
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>?, with event: UIEvent?) {

@@ -16,6 +16,7 @@ struct CollisionCategory {
 import CoreMotion
 import SpriteKit
 import GameplayKit
+import TremorTrackerFramework
 
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
@@ -29,6 +30,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var lastTouchPosition: CGPoint?
     
     var backButton = SKLabelNode(fontNamed: "Helvetica Neue UltraLight")
+    
+    var tremorTracker:TremorTracker?
     
     override func didMove(to view: SKView) {
 
@@ -75,10 +78,30 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func instructionsRead(_ button: UIButton) {
         // remove dialog
         self.view!.viewWithTag(100)!.removeFromSuperview()
-        
+
         //activate sensors
         motionManager = CMMotionManager()
+        // old implementation
         motionManager.startAccelerometerUpdates()
+        
+        // add tracking
+        tremorTracker = TremorTracker(motionManager: motionManager)
+        
+        tremorTracker?.startMeasuringSession(callback: nil)
+        
+        //new implementation
+//        if motionManager.isAccelerometerAvailable {
+//            motionManager.accelerometerUpdateInterval = 0.01
+//            motionManager.startAccelerometerUpdates(to: OperationQueue.main) {
+//                [weak self] (data: CMAccelerometerData?, error: Error?) in
+//                if let acceleration = data?.acceleration {
+//                    print(NSDate().timeIntervalSince1970)
+//                    //let rotation = atan2(acceleration.x, acceleration.y) - M_PI
+//                    //self?.imageView.transform = CGAffineTransform(rotationAngle: rotation)
+//                }
+//            }
+//        }
+        
     }
     
     private func createBall(){
@@ -105,11 +128,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if let currentTouch = lastTouchPosition {
                 let diff = CGPoint(x: currentTouch.x - ball.position.x, y: currentTouch.y - ball.position.y)
                 physicsWorld.gravity = CGVector(dx: diff.x / 100, dy: diff.y / 100)
+                // for debugging
+                print(CGVector(dx: diff.x / 100, dy: diff.y / 100))
             }
         #else
         
         if let motionManager = self.motionManager {
             if let accelerometerData = motionManager.accelerometerData {
+//                print(acceleromaterData)
                 physicsWorld.gravity = CGVector(dx: accelerometerData.acceleration.y * -50, dy: accelerometerData.acceleration.x * 50)
             }
         }
@@ -156,7 +182,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         lastTouchPosition = nil
         if let touch = touches.first {
             if backButton.contains(touch.location(in: self)){
-                if let instructions = self.view?.viewWithTag(100)!{
+                if let instructions = self.view?.viewWithTag(100){
                     instructions.removeFromSuperview()
                 }
                 
@@ -171,5 +197,59 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         lastTouchPosition = nil
     }
     
-
+    
+    // stuff for saving csv formatted accelerator data
+//    var dataDump = [(String, String, String)]()
+//    let filepath = ""
+//    let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
+//    var lastOp: CSVDumpOperation?
+//    
+//    func addDataTuple(accelerometerData: (String, String, String)) {
+//        dataDump.append(accelerometerData)
+//        
+//        if dataDump.count >= 300 {
+//            let toBeDump = dataDump
+//            dataDump = [(String, String, String)]()
+//            dumpArray(data: toBeDump)
+//        }
+//    }
+//    
+//    func dumpArray(data: [(String, String, String)]!) {
+//        let op = CSVDumpOperation(file: paths, data: data)
+//        if lastOp != nil && !lastOp!.isFinished {
+//            op.addDependency(lastOp!)
+//        }
+//        lastOp = op
+//        // how should this work?
+////        dumpQueue.addOperation(op)
+//    }
 }
+
+
+//directly copied from http://www.mydrivesolutions.com/engineering/swift-data-collection/
+//class CSVDumpOperation: Operation {
+//    
+//    let data = [(String, String, String)]()
+//    let os : OutputStream
+//    
+//    init(file: String, data: [(String, String, String)]) {
+//        os = OutputStream(toFileAtPath: file, append: true)!
+//        os.open()
+//        
+//        super.init()
+//        
+//        self.data = data
+//    }
+//    
+//    override func main() {
+//        for row in data {
+//            let rowStr = "(row.x),(row.y),(row.z)...n"
+//            if let rowData = rowStr.data(using: String.Encoding.utf8, allowLossyConversion: false) {
+//                let bytes = UnsafePointer<UInt8>(rowData.bytes)
+//                os.write(bytes, maxLength: rowData.length)
+//            }
+//        }
+//        
+//        os.close()
+//    }
+//}
