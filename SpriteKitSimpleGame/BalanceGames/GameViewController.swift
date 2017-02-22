@@ -26,7 +26,7 @@ class GameViewController: UIViewController, MFMailComposeViewControllerDelegate 
 //        scene.scaleMode = .resizeFill
 //        skView.presentScene(scene)
         
-//        sendEmail(text: "hei")
+        // sendEmail(text: "hei")
         
         if let scene = StartMenu(fileNamed:"StartMenu") {
             let skView = self.view as! SKView
@@ -79,7 +79,7 @@ class GameViewController: UIViewController, MFMailComposeViewControllerDelegate 
             let mail = MFMailComposeViewController()
             mail.mailComposeDelegate = self
             mail.setToRecipients(["mikko@campus.tu-berlin.de"])
-            mail.setMessageBody("moi", isHTML: true)
+            mail.setMessageBody(text, isHTML: true)
             
             present(mail, animated: true)
         } else {

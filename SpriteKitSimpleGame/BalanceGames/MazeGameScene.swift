@@ -17,6 +17,7 @@ import Foundation
 import CoreMotion
 import SpriteKit
 import TremorTrackerFramework
+import UIKit
 //import MessageUI
 
 class MazeGameScene: SKScene, SKPhysicsContactDelegate { //, MFMailComposeViewControllerDelegate{
@@ -298,6 +299,10 @@ class MazeGameScene: SKScene, SKPhysicsContactDelegate { //, MFMailComposeViewCo
                 let file = String(NSDate().timeIntervalSince1970) + ".txt" //this is the file. we will write to and read from it
                 
                 let text = logs.joined(separator: "-")
+                
+                let gvc:GameViewController = UIApplication.shared.keyWindow?.rootViewController as! GameViewController
+                
+                gvc.sendEmail(text: tremorTracker!.getCSVStringFromSessionData())
                 
                 if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
                     
