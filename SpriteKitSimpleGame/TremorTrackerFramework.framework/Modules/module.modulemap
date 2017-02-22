@@ -1,0 +1,10 @@
+framework module TremorTrackerFramework {
+  umbrella header "TremorTrackerFramework.h"
+
+  export *
+  module * { export * }
+}
+
+module TremorTrackerFramework.Swift {
+    header "TremorTrackerFramework-Swift.h"
+}
