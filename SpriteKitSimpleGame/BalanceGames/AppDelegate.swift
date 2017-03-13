@@ -2,7 +2,7 @@
 //  AppDelegate.swift
 //  SpriteKitSimpleGame
 //
-//  Created by Mikko on 31/12/2016.
+//  Created by Mikko Honkanen on 31/12/2016.
 //  Copyright © 2016 Mikko. All rights reserved.
 //
 

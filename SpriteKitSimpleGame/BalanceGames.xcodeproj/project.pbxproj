@@ -18,21 +18,21 @@
 		C023AE871E18EFE7004F4F52 /* StartMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = C023AE861E18EFE7004F4F52 /* StartMenu.swift */; };
 		C023AE891E190D40004F4F52 /* MazeGameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = C023AE881E190D40004F4F52 /* MazeGameScene.swift */; };
 		C023AE8D1E193AA1004F4F52 /* level1.txt in Resources */ = {isa = PBXBuildFile; fileRef = C023AE8C1E193AA1004F4F52 /* level1.txt */; };
-		C051152C1E5DDE3700B2C1C3 /* TremorTrackerFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C051152A1E5DDE3000B2C1C3 /* TremorTrackerFramework.framework */; };
-		C051152D1E5DDE3700B2C1C3 /* TremorTrackerFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C051152A1E5DDE3000B2C1C3 /* TremorTrackerFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C03FCA401E5EF91800950374 /* TremorTrackerFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C051152E1E5EF87700B2C1C3 /* TremorTrackerFramework.framework */; };
+		C03FCA411E5EF91800950374 /* TremorTrackerFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C051152E1E5EF87700B2C1C3 /* TremorTrackerFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C072443E1E32097900565C16 /* GameOverScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = C072443D1E32097900565C16 /* GameOverScene.sks */; };
 		C089C35D1E1E32E200AD931F /* GameFinishedScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = C089C35C1E1E32E200AD931F /* GameFinishedScene.swift */; };
 		C0CA5F6E1E30B3CE001CFB20 /* StartMenu.sks in Resources */ = {isa = PBXBuildFile; fileRef = C0CA5F6D1E30B3CE001CFB20 /* StartMenu.sks */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		C0F30D0A1E5DC01100119A70 /* Embed Frameworks */ = {
+		C03FCA421E5EF91800950374 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				C051152D1E5DDE3700B2C1C3 /* TremorTrackerFramework.framework in Embed Frameworks */,
+				C03FCA411E5EF91800950374 /* TremorTrackerFramework.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -53,7 +53,7 @@
 		C023AE861E18EFE7004F4F52 /* StartMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StartMenu.swift; sourceTree = "<group>"; };
 		C023AE881E190D40004F4F52 /* MazeGameScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MazeGameScene.swift; sourceTree = "<group>"; };
 		C023AE8C1E193AA1004F4F52 /* level1.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = level1.txt; sourceTree = "<group>"; };
-		C051152A1E5DDE3000B2C1C3 /* TremorTrackerFramework.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TremorTrackerFramework.framework; sourceTree = "<group>"; };
+		C051152E1E5EF87700B2C1C3 /* TremorTrackerFramework.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TremorTrackerFramework.framework; sourceTree = "<group>"; };
 		C072443D1E32097900565C16 /* GameOverScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameOverScene.sks; sourceTree = "<group>"; };
 		C089C35C1E1E32E200AD931F /* GameFinishedScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameFinishedScene.swift; sourceTree = "<group>"; };
 		C0CA5F6D1E30B3CE001CFB20 /* StartMenu.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = StartMenu.sks; sourceTree = "<group>"; };
@@ -64,7 +64,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C051152C1E5DDE3700B2C1C3 /* TremorTrackerFramework.framework in Frameworks */,
+				C03FCA401E5EF91800950374 /* TremorTrackerFramework.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -76,7 +76,7 @@
 			children = (
 				C023AE691E1789E0004F4F52 /* SpriteKitSimpleGame */,
 				C023AE681E1789E0004F4F52 /* Products */,
-				C051152A1E5DDE3000B2C1C3 /* TremorTrackerFramework.framework */,
+				C051152E1E5EF87700B2C1C3 /* TremorTrackerFramework.framework */,
 			);
 			sourceTree = "<group>";
 		};
@@ -137,7 +137,7 @@
 				C023AE631E1789E0004F4F52 /* Sources */,
 				C023AE641E1789E0004F4F52 /* Frameworks */,
 				C023AE651E1789E0004F4F52 /* Resources */,
-				C0F30D0A1E5DC01100119A70 /* Embed Frameworks */,
+				C03FCA421E5EF91800950374 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);

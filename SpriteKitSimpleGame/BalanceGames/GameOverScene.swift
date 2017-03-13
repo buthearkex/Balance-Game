@@ -2,7 +2,7 @@
 //  GameOverScene.swift
 //  BalanceGame
 //
-//  Created by Mikko on 01/01/2017.
+//  Created by Mikko Honkanen on 01/01/2017.
 //  Copyright © 2017 Mikko. All rights reserved.
 //
 
@@ -17,11 +17,9 @@ class GameOverScene: SKScene {
     
     
     override func didMove(to view: SKView) {
-        
         newGameLabel = childNode(withName: "newGameLabel") as! SKLabelNode
         toMenuLabel = childNode(withName: "toMenuLabel") as! SKLabelNode
         uploadButton = childNode(withName: "uploadButton") as! SKLabelNode
-    
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -40,9 +38,7 @@ class GameOverScene: SKScene {
             if uploadButton.contains(touch.location(in: self)){
                 let gvc:GameViewController = UIApplication.shared.keyWindow?.rootViewController as! GameViewController
                 gvc.sendEmail(text: self.userData?.object(forKey: "resultcsv") as! String)
-
             }
-            
         }
     }
     

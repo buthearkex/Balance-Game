@@ -2,10 +2,11 @@
 //  GameScene.swift
 //  BalanceGame
 //
-//  Created by Mikko on 31/12/2016.
+//  Created by Mikko Honkanen on 31/12/2016.
 //  Copyright © 2016 Mikko. All rights reserved.
 //
 
+// set the different object types
 struct CollisionCategory {
     static let None      : UInt32 = 0
     static let All       : UInt32 = UInt32.max
@@ -21,6 +22,7 @@ import TremorTrackerFramework
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
+    // size of the circle the player has to stay inside
     let circleRadius = 150
     
     let ball = SKSpriteNode(imageNamed: "ball")
@@ -56,6 +58,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private func createInstructionsDialog(){
         let button = UIButton(type: .system)
         button.setTitle("OK", for: .normal)
+        // this only activates sensors if the ok-button is hit, not something outside of it
         button.addTarget(self, action: #selector(self.instructionsRead(_:)), for: .touchDown)
         button.sizeToFit()
         button.center = CGPoint(x: 100, y: 120)
@@ -81,14 +84,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
         //activate sensors
         motionManager = CMMotionManager()
-        // old implementation
         motionManager.startAccelerometerUpdates()
         
         // add tracking
         tremorTracker = TremorTracker(motionManager: motionManager)
         
         tremorTracker?.startMeasuringSession(callback: nil)
-        
     }
     
     private func createBall(){
@@ -111,15 +112,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     override func update(_ currentTime: TimeInterval) {
+        // if using emulator, touches are used to move the ball
         #if (arch(i386) || arch(x86_64))
             if let currentTouch = touchedPoint {
                 let diff = CGPoint(x: currentTouch.x - ball.position.x, y: currentTouch.y - ball.position.y)
                 physicsWorld.gravity = CGVector(dx: diff.x / 100, dy: diff.y / 100)
-                // for debugging
-                print(CGVector(dx: diff.x / 100, dy: diff.y / 100))
             }
         #else
-        
         if let motionManager = self.motionManager {
             if let accelerometerData = motionManager.accelerometerData {
                 physicsWorld.gravity = CGVector(dx: accelerometerData.acceleration.y * -50, dy: accelerometerData.acceleration.x * 50)

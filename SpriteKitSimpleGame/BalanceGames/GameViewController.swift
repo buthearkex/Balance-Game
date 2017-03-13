@@ -2,7 +2,7 @@
 //  GameViewController.swift
 //  BalanceGame
 //
-//  Created by Mikko on 31/12/2016.
+//  Created by Mikko Honkanen on 31/12/2016.
 //  Copyright © 2016 Mikko. All rights reserved.
 //
 
@@ -48,6 +48,7 @@ class GameViewController: UIViewController, MFMailComposeViewControllerDelegate 
         if MFMailComposeViewController.canSendMail() {
             let mail = MFMailComposeViewController()
             mail.mailComposeDelegate = self
+            // please change the email addresses, if you're using the code :)
             mail.setToRecipients(["mikko.honkanen@campus.tu-berlin.de", "data@thomasfett.de", "d.delgado@campus.tu-berlin.de"])
             mail.setMessageBody(text, isHTML: true)
             

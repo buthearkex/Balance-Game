@@ -2,7 +2,7 @@
 //  GameFinishedScene.swift
 //  BalanceGame
 //
-//  Created by Mikko on 05/01/2017.
+//  Created by Mikko Honkanen on 05/01/2017.
 //  Copyright © 2017 Mikko. All rights reserved.
 //
 

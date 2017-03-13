@@ -2,7 +2,7 @@
 //  MazeGameScene.swift
 //  BalanceGame
 //
-//  Created by Mikko on 01/01/2017.
+//  Created by Mikko Honkanen on 01/01/2017.
 //  Copyright © 2017 Mikko. All rights reserved.
 //
 enum CollisionTypes: UInt32 {
@@ -39,7 +39,7 @@ class MazeGameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
-    var logs = [String]()
+    //var logs = [String]()
     var tremorTracker: TremorTracker?
     
     override func didMove(to view: SKView) {
@@ -78,7 +78,7 @@ class MazeGameScene: SKScene, SKPhysicsContactDelegate {
     private func createInstructionsDialog(){
         let button = UIButton(type: .system)
         button.setTitle("OK", for: .normal)
-        //bug for pressing outside of dialog
+        //only pressing the ok-button starts the sensors
         button.addTarget(self, action: #selector(self.instructionsRead(_:)), for: .touchDown)
         button.sizeToFit()
         button.center = CGPoint(x: 100, y: 120)
@@ -223,7 +223,7 @@ class MazeGameScene: SKScene, SKPhysicsContactDelegate {
                 physicsWorld.gravity = CGVector(dx: accelerometerData.acceleration.y * -50, dy: accelerometerData.acceleration.x * 50)
                 
                 let toLog = String(accelerometerData.acceleration.x) + " " + String(accelerometerData.acceleration.y) + " " + String(accelerometerData.acceleration.z)
-                logs.append(toLog)
+                //logs.append(toLog)
             }
             
         }
@@ -284,7 +284,6 @@ class MazeGameScene: SKScene, SKPhysicsContactDelegate {
                 instructions.removeFromSuperview()
             }
             if backButton.contains(touch.location(in: self)){
-                
                 
                 tremorTracker?.stopMeasuringSession()
                 let result = "MazeGame " + tremorTracker!.getCSVStringFromSessionData()
